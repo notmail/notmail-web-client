@@ -1,0 +1,29 @@
+<h1>hi!</h1>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<script src="./js/notmail_api.js"></script>
+<script>
+    var notmail = new NotmailWeb('http://127.0.0.1:6060');
+    
+    notmail.passwordAuthenticate('jaime@ehu.es', '1234', function(err, session){
+        if(err) console.log(err);
+        else console.log(session)
+    });
+    notmail.tokenAuthenticate('58dcc23c4f27710ad552ec65_f35146963169516667e373c9dfc96cf1011fe4e3eac50ca9c87fac05acba0b61');
+
+
+    notmail.getSubscriptions({}, function(err, subs){
+        if(err) console.log(err)
+        console.log(subs)
+        console.log(Object.values(subs)[0].show())
+
+        notmail.getMessages({}, function(err, msgs){
+            if(err) console.log(err)
+            console.log(msgs)
+            msgs[0].show();
+        })
+
+    })
+
+
+
+</script>

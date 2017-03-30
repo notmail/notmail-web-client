@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="notMAIL web client">
+    <title>notMAIL Web Client - Login</title>
+    
+    <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-" crossorigin="anonymous">
+    <style>
+
+
+h1, input::-webkit-input-placeholder, button {
+  font-family: 'roboto', sans-serif;
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+h1 {
+  height: 100px;
+  width: 100%;
+  font-size: 18px;
+  background: #18aa8d;
+  color: white;
+  line-height: 150%;
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.2);
+}
+
+form {
+  box-sizing: border-box;
+  width: 260px;
+  margin: 100px auto 0;
+  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.2);
+  padding-bottom: 40px;
+  border-radius: 3px;
+}
+form h1 {
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+input {
+  margin: 40px 25px;
+  width: 200px;
+  display: block;
+  border: none;
+  padding: 10px 0;
+  border-bottom: solid 1px #1abc9c;
+  -webkit-transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+  transition: all 0.3s cubic-bezier(0.64, 0.09, 0.08, 1);
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 96%, #1abc9c 4%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 96%, #1abc9c 4%);
+  background-position: -200px 0;
+  background-size: 200px 100%;
+  background-repeat: no-repeat;
+  color: #0e6252;
+}
+input:focus, input:valid {
+  box-shadow: none;
+  outline: none;
+  background-position: 0 0;
+}
+input:focus::-webkit-input-placeholder, input:valid::-webkit-input-placeholder {
+  color: #1abc9c;
+  font-size: 11px;
+  -webkit-transform: translateY(-20px);
+          transform: translateY(-20px);
+  visibility: visible !important;
+}
+
+button {
+  border: none;
+  background: #1abc9c;
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 6px;
+  width: 200px;
+  color: white;
+  margin-left: 25px;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+}
+button:hover {
+  -webkit-transform: translateY(-3px);
+          transform: translateY(-3px);
+  box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
+}
+
+.follow {
+  width: 42px;
+  height: 42px;
+  border-radius: 50px;
+  background: #03A9F4;
+  display: inline-block;
+  margin: 50px calc(50% - 21px);
+  white-space: nowrap;
+  padding: 13px;
+  box-sizing: border-box;
+  color: white;
+  -webkit-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  font-family: Roboto, sans-serif;
+  text-decoration: none;
+  box-shadow: 0 5px 6px 0 rgba(0, 0, 0, 0.2);
+}
+.follow i {
+  margin-right: 20px;
+  -webkit-transition: margin-right 0.2s ease;
+  transition: margin-right 0.2s ease;
+}
+.follow:hover {
+  width: 134px;
+  -webkit-transform: translateX(-50px);
+          transform: translateX(-50px);
+}
+.follow:hover i {
+  margin-right: 10px;
+}
+
+
+</style>
+
+
+</head>
+<body>
+
+<form id="userauth">
+  <h1>
+      User Login
+      <p style="font-size: 14px; text-align: right; margin-top: 2px; color: #0e6252; cursor: pointer" id="token">Use Token authentication</p>
+  </h1>
+  <input placeholder="Notmail Server URL" type="text" required="" id="urlfield">
+  <input placeholder="Notmail" type="text" required="" id="notmailfield">
+  <input placeholder="Password" type="password" required="" id="passwordfield">
+  <button>Submit</button>
+</form> 
+
+<form id="tokenauth" style="display: none">
+  <h1>
+      Token Login
+      <p style="font-size: 14px; text-align: right; margin-top: 2px; color: #0e6252; cursor: pointer" id="user">Use Normal authentication</p>
+  </h1>
+    <input placeholder="Notmail Server URL" type="text" required="" id="urlfield2">
+  <input placeholder="Token" type="password" required="" id="tokenfield">
+  <button>Submit</button>
+</form> 
+
+<script src="./js/notmail_api.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+<script>
+
+    $('#token').click(function(){
+        $('#userauth').css('display','none')
+        $('#tokenauth').css('display','block')
+    })
+    $('#user').click(function(){
+        $('#userauth').css('display','block')
+        $('#tokenauth').css('display','none')
+    })
+    $("#userauth").submit(function(evt){
+        evt.preventDefault();
+        var notmail = new NotmailWeb($('#urlfield').val());
+        notmail.passwordAuthenticate($('#notmailfield').val(), $('#passwordfield').val(), function(err, session){
+            if(err) console.log(err);
+            else{
+                var session = {
+                    url: $('#urlfield').val(),
+                    connected: true,
+                    notmail: $('#notmailfield').val(),
+                    token: session.token,
+                    expiration: session.expiration,
+                    subs: session.subs,
+                    permissions: session.permissions
+                }
+                localStorage.setItem('session', JSON.stringify(session));
+                window.location = './'
+            }
+        });
+        console.log($('#notmailfield').val())
+    })
+</script>
+
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+<link href='http://fonts.googleapis.com/css?family=Roboto:400' rel='stylesheet' type='text/css'>
+
+</body>
+</html>
