@@ -57,3 +57,14 @@
 .notmail-item:hover{
     background-color: rgb(35.8%, 75.3%, 82.7%);
 }
+
+.selectedSub{
+    color: white !important;
+}
+
+.unselectedSub{
+    color: gray !important;
+}
+/*.selectedSub{
+    color: yellow !important;
+}*/

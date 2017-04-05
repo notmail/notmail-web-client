@@ -4,6 +4,7 @@
 
     var endpoints = {
         auth: '/notmail_api/user/auth/',
+        auth_info: '/notmail_api/user/auth/info',
         sub: '/notmail_api/user/sub/',
         msg: '/notmail_api/user/msg/'
     }
@@ -30,15 +31,11 @@
 
     var getUrl = function(endpoint, query){
         if (!query) query = {};
-        query.token = this.session.token;
+        if (!query.token) query.token = this.session.token;
         return this.url + endpoint + '?' + jQuery.param(query);
     }
 
     // Notmail_shared_methods
-
-    NotmailWeb.prototype.tokenAuthenticate = function(token){
-        this.session.token = token;
-    }
 
     NotmailWeb.prototype.passwordAuthenticate = function(notmail, password, callback){
         var that = this;
@@ -51,6 +48,27 @@
                 that.session.expiration = data.session.expiration;
                 that.session.subs = data.session.subs;
                 that.session.permissions = data.session.permissions
+                callback(false, data.session)
+            }
+        })
+        .fail(function(err){
+            callback(err.responseJSON.error);
+        })
+    }
+
+
+    NotmailWeb.prototype.tokenAuthenticate = function(token, callback){
+        var that = this;
+        var url = getUrl.call(this, endpoints.auth_info, {token: token})        
+        $.ajax(url, {method: 'GET'})
+        .done(function(data){
+            console.log('got data'+data.session.token)
+            if(data.session){
+                that.session.token = data.session.token;
+                that.session.expiration = data.session.expiration;
+                that.session.subs = data.session.subs;
+                that.session.permissions = data.session.permissions
+                that.session.notmail = data.session.notmail
                 callback(false, data.session)
             }
         })
@@ -88,7 +106,7 @@
             callback(false, that.messages);
         })
         .fail(function(err){
-            if(err.status == 401) this.eventDisconnect();
+            if(err.status == 401) that.eventDisconnect();
             callback(err.responseJSON.error);
         })
     };
@@ -116,7 +134,7 @@
             callback(false, that.subs);
         })
         .fail(function(err){
-            if(err.status == 401) this.eventDisconnect();
+            if(err.status == 401) that.eventDisconnect();
             callback(err.responseJSON.error);
         })
     };
