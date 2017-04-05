@@ -10,11 +10,12 @@
     <link rel="stylesheet" href="css/style.css">
 
     <link rel="stylesheet" href="css/layouts/notmail.css">
+    <link rel="stylesheet" href="css/layouts/notmail.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
 
 </head>
 <body>
-
-
 
 
 
@@ -28,8 +29,10 @@
         <div class="logo">NOT<span style="color: white; font-size:50px;">mail</span>
         </div>
         <p class="loggedtext">Logged as: </p>
-        <p class="notmailtext"></p>
-        <p class="exittext"><a>[-></a></p>
+        <span class="notmailtext"></span>
+        <span class="glyphicon glyphicon-log-out exittext"></span>
+        <!--<img class="exittext" src="./img/icons/glyphicons-388-log-out.png">-->
+        <!--<p class="exittext"><a>[-></a></p>-->
 
         <div class="nav-inner">
 
@@ -89,16 +92,96 @@
 
                 <div class="notmail-content-controls pure-u-1-2">
                     <button id="msgDelete" class="secondary-button pure-button">Borrar</button>
+                    <button id="msgMarkAsNotRead" class="secondary-button pure-button">Marcar como no leído</button>
                 </div>
             </div>
 
             <div class="notmail-content-body">
                 <p id="msgData">
-                    AQUÍ VA EL TEXTO DEL MENSAJE
+                    
                 </p>
             </div>
         </div>
     </div>
+</div>
+
+
+<!-- Modal -->
+<div id="subpanel" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="subInfoTitle1">Título de la Suscripción</h4>
+      </div>
+      <div class="modal-body">
+            
+            <form class="pure-form pure-form-aligned">
+                <fieldset>
+
+                    <div class="pure-control-group">
+                        <label>Imagen</label>
+                        <!--<input id="name" type="text" placeholder="Ejemplo para el nombre de la aplicación">-->
+                        <span class="pure-form-message-inline">
+                            <img width="128" height="128" alt="Reid Burke&#x27;s avatar" class="subInfoImg" id="subInfoImg" src="img/common/reid-avatar.png">
+                        </span>
+                    </div>
+                    <div class="pure-control-group">
+                        <label>Nombre de la Aplicación</label>
+                        <span class="pure-form-message-inline" id="subInfoTitle2">Ejemplo para el nombre de la aplicación</span>
+                    </div>
+                    <div class="pure-control-group">
+                        <label>Descripción</label>
+                        <span class="pure-form-message-inline" id="subInfoDescription">Ejemplo para la descripción de la aplicación</span>
+                    </div>
+                    <div class="pure-control-group">
+                        <label>URL</label>
+                        <span class="pure-form-message-inline" id="subInfoUrl">http://ejemplo.com/notmail</span>
+                    </div>
+                    <div class="pure-control-group">
+                        <label>Fecha de suscripción</label>
+                        <span class="pure-form-message-inline" id="subInfoDate">10/10/10</span>
+                    </div>
+                    <div class="pure-control-group">
+                        <label>Seguridad de la suscripción</label>
+                        <span class="pure-form-message-inline" id="subInfoUnsecured">No segura</span>
+                    </div>
+                    <div class="pure-control-group">
+                        <label>Estado de la suscripción</label>
+                        <span class="pure-form-message-inline" id="subInfoStatus">subscribed</span>
+                    </div>
+
+
+                    <div class="pure-controls" id="subInfoPending">
+                        <div class="pure-control-group">
+                            <label>Código de verificación</label>
+                            <span class="pure-form-message-inline" style="font-size: 24px;" id="subInfoValidation">1210</span>
+                        </div>
+                        <label for="subInfoAcceptCheck" class="pure-checkbox">
+                            <input id="subInfoAcceptCheck" type="checkbox"> He comprobado el código de verificación y coincide con el proporcionado por la aplicación.
+                        </label>
+
+                        <button type="submit" class="pure-button pure-button-primary" id="subInfoAccept">Aceptar suscripción</button>
+                    </div>
+
+                    <div class="pure-controls" >
+                        <label for="subInfoDeleteCheck" class="pure-checkbox">
+                            <input id="subInfoDeleteCheck" type="checkbox"> Deseo Eliminar la suscripción
+                        </label>
+
+                        <button type="submit" class="btn-danger pure-button" id="subInfoDelete">Eliminar suscripción</button>
+                    </div>
+
+                </fieldset>
+            </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
@@ -120,8 +203,10 @@
 
     });
 </script>
+<script src="./js/bootstrap.min.js"></script>
 <script src="./js/notmail_api.js"></script>
 <script src="./js/script.js"></script>
+
 
 
 

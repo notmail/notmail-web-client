@@ -1,7 +1,7 @@
 .logo{
             z-index: 999;
             position: fixed;
-            width: 230px;
+            width: 250px;
             background-color: white;
             height: 60px;
             padding-left: 20px;
@@ -25,6 +25,7 @@
     color: white !important;
 }
 .notmailtext{
+    margin-left: -45px;
     color: rgb(0%, 84.2%, 100%);
     font-size: 18px;
 }
@@ -44,7 +45,7 @@
 #subList img{
     display: inline-block;
     position: relative;
-    top: 12px;
+    top: 0px;
     width: 30px;
     
     border-radius: 25px;
@@ -54,8 +55,56 @@
     margin-bottom: 6px;
 }
 
+
 .notmail-item:hover{
     background-color: rgb(35.8%, 75.3%, 82.7%);
+}
+
+
+.modal label{
+    font-weight: bold;
+}
+
+.subInfoImg{
+    display: inline;
+    border-radius: 25px;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.subShow{
+    color:#252a3a;  
+}
+.subShow:hover{
+    color:rgb(35.8%, 75.3%, 82.7%) ;
+}
+
+.glyphicon-edit{
+    color: white;
+}
+/*.selectedSub{
+    color: yellow !important;
+}*/
+
+.pure-menu-item{
+    margin: 0;
+    padding: 0;
+    display: block;
+}
+
+.subListName{
+    display: block;
+    width: 100%;
+    max-width:220px;
+    word-break:break-all;
+    white-space: normal;
+    color: white;
+}
+
+.settingsSubs{
+    margin-left: 225px;
+    position: absolute !important;
+    top: 12px !important;
 }
 
 .selectedSub{
@@ -65,6 +114,7 @@
 .unselectedSub{
     color: gray !important;
 }
-/*.selectedSub{
-    color: yellow !important;
-}*/
+
+.subListName a{
+    color: inherit !important;
+}

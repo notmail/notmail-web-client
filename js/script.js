@@ -3,6 +3,7 @@ if(!session || !session.connected) window.location = './login.html'
 
 var mensajeActual;
 var mensajeActualRef;
+var subActual;
 var subsList;
 var msgsList;
 
@@ -18,8 +19,8 @@ notmail.on('disconnect', function(){
 $('.exittext').click(function(){
     disconnect();
 })
-
 $('.notmailtext').first().text(session.notmail)
+
 
 notmail.getSubscriptions({}, function(err, subs){
     if(err) console.log(err)
@@ -58,28 +59,31 @@ function actualizarListaSuscripciones(subs){
     for(sub in subs){
         if(subs[sub].status == 'subscribed'){
             subscribed += `
-            <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link subListName" subid="${subs[sub].sub}">
-                    <img class="subListImage" src="img/common/reid-avatar.png">
+            <li class="pure-menu-item subListName selectedSub" subid="${subs[sub].sub}">
+                <a href="#" class="pure-menu-link">
+                    <img class="subListImage" src="${subs[sub].img}">
                     ${subs[sub].app.title}
                 </a>
+                <span class="subShow settingsSubs glyphicon glyphicon-edit"></span>
             </li>
             `
         }
         if(subs[sub].status == 'pending'){
             pending += `
-            <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link subListName" subid="${subs[sub].sub}">
-                    <img class="subListImage" src="img/common/reid-avatar.png">
+            <li class="pure-menu-item subListName selectedSub" subid="${subs[sub].sub}">
+                <a href="#" class="pure-menu-link">
+                    <img class="subListImage" src="${subs[sub].img}">
                     ${subs[sub].app.title}
                 </a>
+                <span class="subShow settingsSubs glyphicon glyphicon-edit"></span>
             </li>
             `
         }
     }
     $('#subListElems').html(subscribed)
     $('#subListElemsPending').html(pending)
-    $('.subListName').click(function(){
+    $('.subListName').click(function(evt){
+        evt.preventDefault();
         var subid = $(this).attr('subid');
         var index = subsFilterList.indexOf(subid);
         if(subsFilterList.length==0){
@@ -95,13 +99,37 @@ function actualizarListaSuscripciones(subs){
         }
         filterMessages();
     })
+    $('.subShow').click(function(){
+        subActual =  notmail.subs[$(this).parent().attr('subid')];
+        mostrarSuscripcionActual();
+    })
+}
+
+function mostrarSuscripcionActual(){
+
+    $('#subInfoImg').attr('src', subActual.app.icon);
+    $('#subInfoTitle').text(subActual.app.title)
+    $('#subInfoTitle2').text(subActual.app.title)
+    $('#subInfoDescription').text(subActual.app.description)
+    $('#subInfoUrl').text(subActual.app.url)
+    $('#subInfoDate').text(subActual.created)
+    $('#subInfoUnsecured').text(subActual.app.unsecured_source)
+    $('#subInfoStatus').text(subActual.status)
+    $('#subInfoValidation').text(subActual.validation)
+    $('#subpanel').modal('show');
+
+    if(subActual.status == 'pending')
+        $('#subInfoPending').css('display', 'block')
+    else
+        $('#subInfoPending').css('display', 'none')
+
 }
 
 function actualizarListaMensajes(msgs){
     var data = "";
     for(var mensaje = msgs.length-1; mensaje>=0; mensaje-- ){
         data += `
-        <div class="notmail-item pure-g" msgid="${msgs[mensaje].id}"> <!-- CLASES: notmail-item-unread y notmail-item-selected -->
+        <div class="notmail-item pure-g ${(msgs[mensaje].read==true)? 'notmail-item-read' : 'notmail-item-unread'} " msgid="${msgs[mensaje].id}"> <!-- CLASES: notmail-item-unread y notmail-item-selected -->
             <div class="pure-u">
                 <img width="64" height="64" alt="Reid Burke&#x27;s avatar" class="notmail-avatar" src="img/common/reid-avatar.png">
             </div>
@@ -120,8 +148,10 @@ function actualizarListaMensajes(msgs){
     $('#list').html(data)
 
     $('.notmail-item').click(function(){
-        $(mensajeActualRef).removeClass('notmail-item-selected');
+        $(this).removeClass('notmail-item-unread');
+        $(this).addClass('notmail-item-read');
         mensajeActualRef = this;
+        $(mensajeActualRef).removeClass('notmail-item-selected');
         $(this).addClass('notmail-item-selected')
         var msgid = $(this).attr('msgid')
         nuevoMensajeActual(notmail.messages.filter(function(msg){return msg.id == msgid})[0])
@@ -136,6 +166,8 @@ function nuevoMensajeActual(mensaje){
     $('#subName').text(mensaje.getSub().app.title);
     $('#msgArrival').text(new Date(mensaje.arrival_time)); 
     $('#msgData').text(mensaje.data );
+
+    if(!mensaje.read) mensaje.setRead(true, function(){});
 }
 
 /*
@@ -156,6 +188,17 @@ $("#mostrarTodas").click(function(){
     console.log(subsFilterList)
     filterMessages();
 })
+
+$("#msgMarkAsNotRead").click(function(){
+    mensajeActual.setRead(false, function(){})
+    $(mensajeActualRef).addClass('notmail-item-unread')
+    $(mensajeActualRef).removeClass('notmail-item-read')
+})
+$("#msgDelete").click(function(){
+    mensajeActual.delete(function(){})
+    $(mensajeActualRef).remove();
+})
+
 
 
 /*

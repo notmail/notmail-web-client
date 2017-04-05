@@ -150,6 +150,7 @@
         this.app = sub.app;
         this.status = sub.status;
         this.validation = sub.validation;
+        this.created = sub.created;
     }
 
     // Subscriptions_shared_methods
@@ -170,11 +171,56 @@
         this.data = msg.data;
         this.id = msg.id;
         this.sub = msg.sub;
+        this.read = msg.read;
     }
 
     // Messages_shared_methods
     Message.prototype.show = function(){
         console.log(this.title+': '+this.data+' by: '+this.getSub().app.title+' at: '+this.arrival_time)
+    }
+    
+    Message.prototype.delete = function(callback){
+        var that = this;
+        var url = getUrl.call(this.notmail, endpoints.msg, {query: 'id', id: this.id})
+        $.ajax(
+            url, 
+            {
+                method: 'DELETE',
+                dataType: 'json',
+            }
+        )
+        .done(function(data){
+            callback(false, 'ok')
+        })
+        .fail(function(err){
+            if(err.status == 401) that.eventDisconnect();
+            callback(err.responseJSON.error);
+        })
+    }
+
+    Message.prototype.setRead = function(value, callback){
+        var that = this;
+        var op;
+
+        if (value==false) op = 'markasnotread'
+        else if (value==true) op = 'markasread'
+        else callback('correct values are true and false');
+
+        var url = getUrl.call(this.notmail, endpoints.msg, {query: 'id', id: this.id, op:op })
+        $.ajax(
+            url, 
+            {
+                method: 'PUT',
+                dataType: 'json',
+            }
+        )
+        .done(function(data){
+            callback(false, 'ok')
+        })
+        .fail(function(err){
+            if(err.status == 401) that.eventDisconnect();
+            callback(err.responseJSON.error);
+        })
     }
 
     Message.prototype.getSub = function(){
