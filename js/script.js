@@ -4,8 +4,8 @@ if(!session || !session.connected) window.location = './login.html'
 var mensajeActual;
 var mensajeActualRef;
 var subActual;
-var subsList;
-var msgsList;
+//var subsList;
+//var msgsList;
 
 var subsFilterList = [];
 
@@ -24,14 +24,14 @@ $('.notmailtext').first().text(session.notmail)
 
 notmail.getSubscriptions({}, function(err, subs){
     if(err) console.log(err)
-    subsList = subs;
+    //subsList = subs;
     actualizarListaSuscripciones(subs);
 
     notmail.getMessages({}, function(err, msgs){
         if(err) console.log(err)
-        msgsList = msgs;
+        //msgsList = msgs;
         actualizarListaMensajes(msgs);
-        nuevoMensajeActual(msgs[0]);
+        //nuevoMensajeActual(msgs[0]);
     })
 })
 
@@ -40,7 +40,7 @@ notmail.getSubscriptions({}, function(err, subs){
 */
 
 function filterMessages(){
-    let filtered = msgsList.filter(function(msg){
+    let filtered = notmail.messages.filter(function(msg){
         return subsFilterList.indexOf(msg.getSub().sub) != -1;
     })
     actualizarListaMensajes(filtered);
@@ -57,28 +57,21 @@ function actualizarListaSuscripciones(subs){
     var subscribed = "";
     var pending = ""
     for(sub in subs){
-        if(subs[sub].status == 'subscribed'){
-            subscribed += `
+
+        if(!subs[sub].app.icon) subs[sub].app.icon = './img/icons/defaultsub.png';
+        var data = `
             <li class="pure-menu-item subListName selectedSub" subid="${subs[sub].sub}">
                 <a href="#" class="pure-menu-link">
-                    <img class="subListImage" src="${subs[sub].img}">
+                    <img class="subListImage" src="${subs[sub].app.icon}" onerror="this.onerror=null;this.src='./img/icons/defaultsub.png';">
                     ${subs[sub].app.title}
                 </a>
                 <span class="subShow settingsSubs glyphicon glyphicon-edit"></span>
             </li>
-            `
-        }
-        if(subs[sub].status == 'pending'){
-            pending += `
-            <li class="pure-menu-item subListName selectedSub" subid="${subs[sub].sub}">
-                <a href="#" class="pure-menu-link">
-                    <img class="subListImage" src="${subs[sub].img}">
-                    ${subs[sub].app.title}
-                </a>
-                <span class="subShow settingsSubs glyphicon glyphicon-edit"></span>
-            </li>
-            `
-        }
+            `;
+        if(subs[sub].status == 'subscribed')
+            subscribed += data;
+        if(subs[sub].status == 'pending')
+            pending += data;  
     }
     $('#subListElems').html(subscribed)
     $('#subListElemsPending').html(pending)
@@ -131,14 +124,14 @@ function actualizarListaMensajes(msgs){
         data += `
         <div class="notmail-item pure-g ${(msgs[mensaje].read==true)? 'notmail-item-read' : 'notmail-item-unread'} " msgid="${msgs[mensaje].id}"> <!-- CLASES: notmail-item-unread y notmail-item-selected -->
             <div class="pure-u">
-                <img width="64" height="64" alt="Reid Burke&#x27;s avatar" class="notmail-avatar" src="img/common/reid-avatar.png">
+                <img width="64" height="64" alt="Reid Burke&#x27;s avatar" class="notmail-avatar" src="${msgs[mensaje].getSub().app.icon}">
             </div>
 
             <div class="pure-u-3-4">
                 <h5 class="notmail-name msgSubName">${msgs[mensaje].getSub().app.title}</h5>
                 <h4 class="notmail-subject msgTitle">${msgs[mensaje].title}</h4>
                 <p class="notmail-desc msgPreview">
-                    ${msgs[mensaje].data}
+                    ${msgs[mensaje].data.substring(0,80)}...
                 </p>
             </div>
         </div>
@@ -156,6 +149,7 @@ function actualizarListaMensajes(msgs){
         var msgid = $(this).attr('msgid')
         nuevoMensajeActual(notmail.messages.filter(function(msg){return msg.id == msgid})[0])
     })
+
 
 }
 
@@ -181,7 +175,7 @@ $("#mostrarNinguna").click(function(){
 
 $("#mostrarTodas").click(function(){
     subsFilterList = [];
-    for(sub in subsList){
+    for(sub in notmail.subs){
         subsFilterList.push(sub);
     }
     $(".subListName").removeClass('unselectedSub')
@@ -194,9 +188,34 @@ $("#msgMarkAsNotRead").click(function(){
     $(mensajeActualRef).addClass('notmail-item-unread')
     $(mensajeActualRef).removeClass('notmail-item-read')
 })
+
 $("#msgDelete").click(function(){
     mensajeActual.delete(function(){})
     $(mensajeActualRef).remove();
+    notmail.getMessages({}, function(err, msgs){})
+})
+
+$("#subInfoAccept").click(function(){
+    if(!$("#subInfoAcceptCheck").prop('checked')) return;
+    subActual.modify('subscribe', function(){})
+    notmail.getSubscriptions({}, function(err, subs){
+        if(err) console.log(err)
+        //subsList = subs;
+        actualizarListaSuscripciones(subs);
+        $('#subpanel').modal('hide');
+        //mostrarSuscripcionActual();
+    })
+})
+
+$("#subInfoDelete").click(function(){
+    if(!$("#subInfoDeleteCheck").prop('checked')) return;
+    subActual.modify('delete', function(){})
+    notmail.getSubscriptions({}, function(err, subs){
+        if(err) console.log(err)
+        subsList = subs;
+        actualizarListaSuscripciones(subs);
+        $('#subpanel').modal('hide');
+    })
 })
 
 

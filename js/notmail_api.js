@@ -157,7 +157,32 @@
     Subscription.prototype.show = function(){
         console.log(this.name+': '+this.status)
     }
-    
+
+    Subscription.prototype.modify = function(value, callback){
+        var that = this;
+        var op;
+
+        if      (value      == 'subscribe') op = 'subscribe'
+        else if (value == 'unsubscribe')    op = 'unsubscribe'
+        else if (value == 'delete')         op = 'delete'
+        else callback('correct values are true and false');
+
+        var url = getUrl.call(this.notmail, endpoints.sub, {sub: this.sub, op:op })
+        $.ajax(
+            url, 
+            {
+                method: 'PUT',
+                dataType: 'json',
+            }
+        )
+        .done(function(data){
+            callback(false, 'ok')
+        })
+        .fail(function(err){
+            if(err.status == 401) that.eventDisconnect();
+            callback(err.responseJSON.error);
+        })
+    }
 
     /* 
         Messages Class
