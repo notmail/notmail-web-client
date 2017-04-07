@@ -32,7 +32,7 @@
     var getUrl = function(endpoint, query){
         if (!query) query = {};
         if (!query.token) query.token = this.session.token;
-        return this.url + endpoint + '?' + jQuery.param(query);
+        return 'http://' + this.url + endpoint + '?' + jQuery.param(query);
     }
 
     // Notmail_shared_methods
@@ -69,6 +69,7 @@
                 that.session.subs = data.session.subs;
                 that.session.permissions = data.session.permissions
                 that.session.notmail = data.session.notmail
+                wsConnect.call(that)
                 callback(false, data.session)
             }
         })
@@ -80,6 +81,10 @@
     NotmailWeb.prototype.on = function(event, callback){
         if(event == 'disconnect')
             this.eventDisconnect = callback;
+        else if(event == 'newmessage')
+            this.eventMessage = callback;
+        else if(event == 'newsub')
+            this.eventSub = callback;
     }
 
     NotmailWeb.prototype.getMessages = function (query, callback) {
@@ -250,6 +255,52 @@
 
     Message.prototype.getSub = function(){
         return this.notmail.subs[this.sub];
+    }
+
+
+    /*
+        WebSockets
+    */
+    var regex = {
+        error: /e(?:=(.*))?/
+    }
+
+    function wsConnect(){
+        console.log(this.url)
+        ws = new WebSocket('ws://' + this.url + '/ws');
+        this.ws = ws;
+        var that = this;
+        console.log('connecting to ws server...');
+
+        ws.onopen = function open() {
+            // Authenticate
+            console.log('connected to ws')
+            ws.send('token=' + that.session.token)
+        };
+
+        ws.onmessage = function incoming(data, flags) {
+            var match;
+            console.log(data)
+            // Check auth
+            if( match = data.data.match(regex.error) ){
+                console.log('error: ' + match[1])
+            }
+
+            match = data.data[0];
+            // Check new message
+            if( match == 'm' )
+                if (that.eventMessage) that.eventMessage();
+            else if( match == 's' )
+                if (that.eventSub) that.eventSub();
+
+        }
+
+        ws.onclose = function incoming(data, flags) {
+            console.log('ws closed');
+            // setTimeout({
+            //     wsConnect();
+            // },10000)
+        }
     }
 
 

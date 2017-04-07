@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<h1>Hi</h1>
+<script>
+
+function wsConnect(){
+    var ws = new WebSocket('ws://127.0.0.1:6060/ws');
+
+    console.log('connecting to server...');
+
+    ws.onopen = function open() {
+        // Authenticate
+        ws.send('token=123456789')
+    };
+
+    ws.onmessage = function incoming(data, flags) {
+        console.log('got a message! ' + JSON.stringify(data));
+    }
+
+    ws.onclose = function incoming(data, flags) {
+        console.log('ws closed');
+    }
+}
+</script>

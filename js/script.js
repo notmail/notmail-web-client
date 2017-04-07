@@ -11,27 +11,40 @@ var subsFilterList = [];
 
 var notmail = new NotmailWeb(session.url);
 
-notmail.session = session;
+//notmail.session = session;
 
 notmail.on('disconnect', function(){    
     disconnect();
+})
+notmail.on('newmessage', function(){
+    notmail.getMessages({}, function(err, msgs){
+        if(err) console.log(err)
+        else    actualizarListaMensajes(msgs);
+    })
+})
+notmail.on('newsub', function(){    
+    notmail.getSubscriptions({}, function(err, msgs){
+        if(err) console.log(err)
+        else    actualizarListaSuscripciones(subs);
+    })
 })
 $('.exittext').click(function(){
     disconnect();
 })
 $('.notmailtext').first().text(session.notmail)
 
-
-notmail.getSubscriptions({}, function(err, subs){
-    if(err) console.log(err)
-    //subsList = subs;
-    actualizarListaSuscripciones(subs);
-
-    notmail.getMessages({}, function(err, msgs){
+notmail.tokenAuthenticate(session.token, function(){
+    notmail.getSubscriptions({}, function(err, subs){
         if(err) console.log(err)
-        //msgsList = msgs;
-        actualizarListaMensajes(msgs);
-        //nuevoMensajeActual(msgs[0]);
+        //subsList = subs;
+        actualizarListaSuscripciones(subs);
+
+        notmail.getMessages({}, function(err, msgs){
+            if(err) console.log(err)
+            //msgsList = msgs;
+            actualizarListaMensajes(msgs);
+            //nuevoMensajeActual(msgs[0]);
+        })
     })
 })
 
@@ -155,7 +168,7 @@ function actualizarListaMensajes(msgs){
 
 function nuevoMensajeActual(mensaje){
     mensajeActual = mensaje;
-
+    $('#main').css('visibility', 'visible')
     $('#msgTitle').text(mensaje.title);
     $('#subName').text(mensaje.getSub().app.title);
     $('#msgArrival').text(new Date(mensaje.arrival_time)); 
@@ -193,6 +206,7 @@ $("#msgDelete").click(function(){
     mensajeActual.delete(function(){})
     $(mensajeActualRef).remove();
     notmail.getMessages({}, function(err, msgs){})
+    $('#main').css('visibility','hidden');
 })
 
 $("#subInfoAccept").click(function(){
