@@ -23,7 +23,8 @@ notmail.on('newmessage', function(){
     })
 })
 notmail.on('newsub', function(){    
-    notmail.getSubscriptions({}, function(err, msgs){
+    console.log('new sub from ws detected');
+    notmail.getSubscriptions({}, function(err, subs){
         if(err) console.log(err)
         else    actualizarListaSuscripciones(subs);
     })
@@ -153,7 +154,7 @@ function actualizarListaMensajes(msgs){
             </div>
         </div>
         `
-        console.log(msgs[mensaje].getSub().app.title)
+        //console.log(msgs[mensaje].getSub().app.title)
     }
     $('#list').html(data)
 
@@ -213,26 +214,36 @@ $("#msgDelete").click(function(){
     $('#main').css('visibility','hidden');
 })
 
-$("#subInfoAccept").click(function(){
+$("#subInfoAccept").click(function(evt){
+    evt.preventDefault();
+    console.log("accepting subscription")
     if(!$("#subInfoAcceptCheck").prop('checked')) return;
-    subActual.modify('subscribe', function(){})
-    notmail.getSubscriptions({}, function(err, subs){
-        if(err) console.log(err)
-        //subsList = subs;
-        actualizarListaSuscripciones(subs);
-        $('#subpanel').modal('hide');
-        //mostrarSuscripcionActual();
+    subActual.modify('subscribe', function(err, ok){
+        if(err) console.log('error:' + err);
+        else{
+            console.log(ok);
+            notmail.getSubscriptions({}, function(err, subs){
+                if(err) console.log(err)
+                actualizarListaSuscripciones(subs);
+                $('#subpanel').modal('hide');
+            })
+        }
     })
 })
 
-$("#subInfoDelete").click(function(){
+$("#subInfoDelete").click(function(evt){
+    evt.preventDefault();
     if(!$("#subInfoDeleteCheck").prop('checked')) return;
-    subActual.modify('delete', function(){})
-    notmail.getSubscriptions({}, function(err, subs){
-        if(err) console.log(err)
-        subsList = subs;
-        actualizarListaSuscripciones(subs);
-        $('#subpanel').modal('hide');
+    subActual.modify('delete', function(err, ok){
+        if(err) console.log('error:' + err);
+        else{
+            console.log(ok);
+            notmail.getSubscriptions({}, function(err, subs){
+                if(err) console.log(err)
+                actualizarListaSuscripciones(subs);
+                $('#subpanel').modal('hide');
+            })
+        }
     })
 })
 
