@@ -201,6 +201,9 @@ button:hover {
             }
         });
     })
+    $("#notmailfield").on("focusout", function(){
+      $("#urlfield").val($("#notmailfield").val().split("@")[1]+":6060");
+    })
 
 </script>
 

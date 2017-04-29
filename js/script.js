@@ -33,7 +33,11 @@ $('.exittext').click(function(){
 })
 $('.notmailtext').first().text(session.notmail)
 
-notmail.tokenAuthenticate(session.token, function(){
+notmail.tokenAuthenticate(session.token, function(err, session){
+    if(err){
+        console.log("Error, invalid token:"+ err);
+        window.location.replace("./login.html");
+    }
     notmail.getSubscriptions({}, function(err, subs){
         if(err) console.log(err)
         //subsList = subs;

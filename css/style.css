@@ -25,13 +25,21 @@
     color: white !important;
 }
 .notmailtext{
-    margin-left: -45px;
+    /*margin-left: -45px;*/
     color: rgb(0%, 84.2%, 100%);
-    font-size: 18px;
+    font-size: 14px;
+    word-break:break-all;
+    display: block;
+    width: 100%;
+    max-width:220px;
 }
 .exittext{
+    position: relative;
+    margin-left: -195px;
+    /*top: inherit !important;*/
     color: white;
     cursor: pointer;
+    left: 0;
 }
 
 .subListImage{
@@ -47,6 +55,7 @@
     position: relative;
     top: 0px;
     width: 30px;
+    height: 30px;
     
     border-radius: 25px;
     border: 2px solid #ffef2d;
