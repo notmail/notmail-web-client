@@ -66,7 +66,7 @@
 
 
 .notmail-item:hover{
-    background-color: rgb(35.8%, 75.3%, 82.7%);
+    background: #eee;
 }
 
 
@@ -126,4 +126,38 @@
 
 .subListName a{
     color: inherit !important;
+}
+
+#main{
+    background-color: white;
+    height: 100%;
+    z-index: 100;
+    position: absolute;
+}
+#main-back{
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    text-align: center;
+    margin: 0 auto;
+    padding: 12px;
+    font-size: 18px;
+    color: rgb(10.8%, 51.3%, 58.9%);
+    display: block;
+}
+
+.notmail-content{
+    position: relative;
+    background-color: white;
+    z-index: 999;
+}
+
+#layout{
+    position: absolute;
+    height: 100%;
+}
+body, html{
+    margin: 0;
+    height: 100%;
+
 }

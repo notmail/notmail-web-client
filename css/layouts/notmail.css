@@ -155,7 +155,7 @@ a {
     }
 
 .notmail-item-selected {
-    background: #eee;
+    background-color: rgb(39.8%, 75%, 81.6%) !important;
 }
 .notmail-item-unread {
     border-left: 6px solid #1b98f8;

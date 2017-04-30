@@ -159,6 +159,7 @@ function actualizarListaMensajes(msgs){
     $('#list').html(data)
 
     $('.notmail-item').click(function(){
+        $(".notmail-item").removeClass('notmail-item-selected');
         $(this).removeClass('notmail-item-unread');
         $(this).addClass('notmail-item-read');
         mensajeActualRef = this;
@@ -173,7 +174,7 @@ function actualizarListaMensajes(msgs){
 
 function nuevoMensajeActual(mensaje){
     mensajeActual = mensaje;
-    $('#main').css('visibility', 'visible')
+    $('.notmail-content').css('visibility', 'visible')
     $('#msgTitle').text(mensaje.title);
     $('#subName').text(mensaje.getSub().app.title);
     $('#msgArrival').text(new Date(mensaje.arrival_time)); 
@@ -211,7 +212,7 @@ $("#msgDelete").click(function(){
     mensajeActual.delete(function(){})
     $(mensajeActualRef).remove();
     notmail.getMessages({}, function(err, msgs){})
-    $('#main').css('visibility','hidden');
+    $('.notmail-content').css('visibility','hidden');
 })
 
 $("#subInfoAccept").click(function(evt){
