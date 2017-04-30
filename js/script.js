@@ -16,13 +16,17 @@ var notmail = new NotmailWeb(session.url);
 notmail.on('disconnect', function(){    
     disconnect();
 })
+var newmsgsnd = new Audio('sounds/newmsg.mp3');
+var newsubsnd = new Audio('sounsd/newsub.mp3');
 notmail.on('newmessage', function(){
+    newmsgsnd.play();
     notmail.getMessages({}, function(err, msgs){
         if(err) console.log(err)
         else    actualizarListaMensajes(msgs);
     })
 })
-notmail.on('newsub', function(){    
+notmail.on('newsub', function(){
+    newsubsnd.play();    
     console.log('new sub from ws detected');
     notmail.getSubscriptions({}, function(err, subs){
         if(err) console.log(err)
