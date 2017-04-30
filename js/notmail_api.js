@@ -52,7 +52,7 @@
             }
         })
         .fail(function(err){
-            callback(err.responseJSON.error);
+            callback(err);
         })
     }
 
@@ -74,7 +74,7 @@
             }
         })
         .fail(function(err){
-            callback(err.responseJSON.error);
+            callback(err);
         })
     }
 
@@ -112,7 +112,7 @@
         })
         .fail(function(err){
             if(err.status == 401) that.eventDisconnect();
-            callback(err.responseJSON.error);
+            callback(err);
         })
     };
 
@@ -140,7 +140,7 @@
         })
         .fail(function(err){
             if(err.status == 401) that.eventDisconnect();
-            callback(err.responseJSON.error);
+            callback(err);
         })
     };
 
@@ -167,7 +167,7 @@
         var that = this;
         var op;
 
-        if      (value      == 'subscribe') op = 'subscribe'
+        if      (value == 'subscribe')      op = 'subscribe'
         else if (value == 'unsubscribe')    op = 'unsubscribe'
         else if (value == 'delete')         op = 'delete'
         else callback('correct values are true and false');
@@ -177,15 +177,16 @@
             url, 
             {
                 method: 'PUT',
-                dataType: 'json',
             }
         )
         .done(function(data){
+            console.log("jq: modify correct");
             callback(false, 'ok')
         })
         .fail(function(err){
+            console.log("jq: error"+JSON.stringify(err))
             if(err.status == 401) that.eventDisconnect();
-            callback(err.responseJSON.error);
+            callback(err);
         })
     }
 
@@ -224,7 +225,7 @@
         })
         .fail(function(err){
             if(err.status == 401) that.eventDisconnect();
-            callback(err.responseJSON.error);
+            callback(err);
         })
     }
 
@@ -249,7 +250,7 @@
         })
         .fail(function(err){
             if(err.status == 401) that.eventDisconnect();
-            callback(err.responseJSON.error);
+            callback(err);
         })
     }
 
@@ -288,10 +289,12 @@
 
             match = data.data[0];
             // Check new message
-            if( match == 'm' )
+            if( match == 'm' ){
                 if (that.eventMessage) that.eventMessage();
-            else if( match == 's' )
+            }
+            else if( match == 's' ){
                 if (that.eventSub) that.eventSub();
+            }
 
         }
 

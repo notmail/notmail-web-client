@@ -199,7 +199,7 @@ a {
  * On tablets and other medium-sized devices, we want to customize some
  * of the mobile styles.
  */
-@media (min-width: 40em) {
+@media (min-width: 10em) {
 
     /* Move the layout over so we can fit the nav + list in on the left */
     #layout {
@@ -235,18 +235,32 @@ a {
     #list {
         margin-left: -350px;
         width: 100%;
-        height: 33%;
+        height: 50%;
         border-bottom: 1px solid #ddd;
     }
 
     #main {
         position: fixed;
-        top: 33%;
+        top: 50%;
         right: 0;
         bottom: 0;
-        left: 150px;
-        overflow: auto;
-        width: 100%; /* so that it's not 100% */
+        /*left: 150px;*/
+        left: 250px;
+        border-top: 4px solid rgb(17.5%, 39.9%, 44.1%);
+        width: auto; /* so that it's not 100% */
+        word-wrap: break-word;
+        overflow: scroll !important;
+    }
+    .notmail-content, #main-back{
+        word-wrap: break-word;
+        scroll-behavior: smooth !important;
+        overflow: scroll !important;
+    }
+    .notmail-content-body{
+        overflow: scroll !important;
+    }
+    #msgData{
+        overflow: scroll;
     }
 
 }
@@ -269,6 +283,7 @@ a {
         position: static;
         margin: 0;
         padding: 0;
+        width: 100% !important;
     }
 }
 
