@@ -249,18 +249,18 @@ a {
         border-top: 4px solid rgb(17.5%, 39.9%, 44.1%);
         width: auto; /* so that it's not 100% */
         word-wrap: break-word;
-        overflow: scroll !important;
+        overflow: hidden !important;
     }
     .notmail-content, #main-back{
         word-wrap: break-word;
         scroll-behavior: smooth !important;
-        overflow: scroll !important;
+        overflow: hidden !important;
     }
     .notmail-content-body{
-        overflow: scroll !important;
+        overflow: hidden !important;
     }
     #msgData{
-        overflow: scroll;
+        overflow: hidden;
     }
 
 }
@@ -284,6 +284,7 @@ a {
         margin: 0;
         padding: 0;
         width: 100% !important;
+        border-top: 0;
     }
 }
 
